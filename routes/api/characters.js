@@ -15,7 +15,7 @@ router.param('character', function (req, res, next, slug) {
     }).catch(next);
 });
 
-router.get('/characters', function (req, res, next) {
+router.get('/', function (req, res, next) {
   Character.find().sort({ name: 1 }).then(function (characters) {
     return res.json({ characters: characters });
   }).catch(next);
