@@ -21,15 +21,10 @@ router.get('/characters', function (req, res, next) {
   }).catch(next);
 });
 
-router.get('/:character', auth.optional, function (req, res, next) {
-  Promise.all([
-    req.payload ? User.findById(req.payload.id) : null,
-    req.article.populate('creator').execPopulate()
-  ]).then(function (results) {
-    var user = results[0];
-
-    return res.json({ article: req.character.toJSONFor(user) });
-  }).catch(next);
+router.get('/:character', function (req, res, next) {
+  return res.json({
+      character: req.character.toJSON()
+  });
 });
 
 router.post('/characters', auth.required, function (req, res, next) {
@@ -38,11 +33,11 @@ router.post('/characters', auth.required, function (req, res, next) {
   //User.findById(req.payload.slug).then(function (user) {
   // if (!user) { return res.sendStatus(401); }
 
-  character.race = req.body.race;
-  character.subRace = req.body.subRace;
-  character.class = req.body.class;
-  character.name = req.body.name;
-  character.level = req.body.level;
+  character.race = req.body.character.race;
+  character.subRace = req.body.character.subRace;
+  character.class = req.body.character.class;
+  character.name = req.body.character.name;
+  character.level = req.body.character.level;
 
   return character.save().then(function () {
     console.log("character.creator");

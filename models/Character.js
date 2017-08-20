@@ -43,7 +43,11 @@ CharacterSchema.pre('validate', function(next){
 });
 
 CharacterSchema.methods.slugify = function() {
+  console.log('slug');
+  console.log(this.name);
+  console.log("is name  broken");
   this.slug = slug(this.name) + '-' + (Math.random() * Math.pow(36, 6) | 0).toString(36);
+  console.log('ify');
 };
 
 mongoose.model('Character', CharacterSchema);
