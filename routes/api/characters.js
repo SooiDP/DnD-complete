@@ -53,23 +53,23 @@ router.put('/characters/:character', auth.required, function (req, res, next) {
   // User.findById(req.payload.id).then(function (user) {
   //if (req.character.creator._id.toString() === req.payload.id.toString()) {
   if (typeof req.body.race !== 'undefined') {
-    req.character.race = req.body.race;
+    req.character.race = req.body.character.race;
   }
 
   if (typeof req.body.subRace !== 'undefined') {
-    req.character.subRace = req.body.subRace;
+    req.character.subRace = req.body.character.subRace;
   }
 
   if (typeof req.body.class !== 'undefined') {
-    req.character.class = req.body.class;
+    req.character.class = req.body.character.class;
   }
 
   if (typeof req.body.name !== 'undefined') {
-    req.character.name = req.body.name;
+    req.character.name = req.body.character.name;
   }
 
   if (typeof req.body.level !== 'undefined') {
-    req.character.level = req.body.level;
+    req.character.level = req.body.character.level;
   }
 
   req.character.save().then(function (character) {

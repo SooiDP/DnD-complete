@@ -84,8 +84,9 @@ app.use(function (err, req, res, next) {
     }
   });
 });
-
+//const port = process.env.PORT || 8080; //HEROKU
+const port = 3000
 // finally, let's start our server...
-var server = app.listen(process.env.PORT || 3000, function () {
+var server = app.listen(process.env.PORT || port, function () {
   console.log('Listening on port ' + server.address().port);
 });
