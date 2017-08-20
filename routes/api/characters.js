@@ -16,11 +16,8 @@ router.param('character', function (req, res, next, slug) {
 });
 
 router.get('/characters', function (req, res, next) {
-  Promise.resolve(req.payload ? Character.findById(req.payload.id) : null).then(function (character) {
-    return req.character.populate().
-      execPopulate().then(function (character) {
-        return res.json({ character: character });
-      });
+  Character.find().sort({ name: 1 }).then(function (characters) {
+    return res.json({ characters: characters });
   }).catch(next);
 });
 
@@ -35,58 +32,77 @@ router.get('/:character', auth.optional, function (req, res, next) {
   }).catch(next);
 });
 
-router.post('/characters', function (req, res, next) {
-  console.log("router gehaald");  
+router.post('/characters', auth.required, function (req, res, next) {
+  console.log("router gehaald");
   var character = new Character();
+  //User.findById(req.payload.slug).then(function (user) {
+  // if (!user) { return res.sendStatus(401); }
 
-  User.findById(req.payload.id).then(function (user) {
-    if (!user) { return res.sendStatus(401); }
+  character.race = req.body.race;
+  character.subRace = req.body.subRace;
+  character.class = req.body.class;
+  character.name = req.body.name;
+  character.level = req.body.level;
 
-    var character = new Character();
-
-    character.race = req.body.character.race;
-    character.subRace = req.body.character.subRace;
-    character.class = req.body.character.class;
-    character.name = req.body.character.name;
-    character.level = req.body.character.level;
-    character.creator = user;
-
-    return character.save().then(function () {
-      console.log(character.creator);
-      return res.json({ character: character.toJSONFor(user) });
-    }); 
-  }).catch(next);
+  return character.save().then(function () {
+    console.log("character.creator");
+    //return res.json({ character: character.toJSONFor(user) });
+    return res.json({
+      character: character.toJSON()
+    });
+  });
+  //}).catch(next);
 });
 
-router.put('/:character', auth.required, function (req, res, next) {
-  User.findById(req.payload.id).then(function (user) {
-    if (req.character.creator._id.toString() === req.payload.id.toString()) {
-      if (typeof req.body.character.race !== 'undefined') {
-        req.character.race = req.body.character.race;
-      }
+router.put('/characters/:character', auth.required, function (req, res, next) {
+  // User.findById(req.payload.id).then(function (user) {
+  //if (req.character.creator._id.toString() === req.payload.id.toString()) {
+  if (typeof req.body.race !== 'undefined') {
+    req.character.race = req.body.race;
+  }
 
-      if (typeof req.body.character.subRace !== 'undefined') {
-        req.character.subRace = req.body.character.subRace;
-      }
+  if (typeof req.body.subRace !== 'undefined') {
+    req.character.subRace = req.body.subRace;
+  }
 
-      if (typeof req.body.character.class !== 'undefined') {
-        req.character.class = req.body.character.class;
-      }
+  if (typeof req.body.class !== 'undefined') {
+    req.character.class = req.body.class;
+  }
 
-      if (typeof req.body.character.name !== 'undefined') {
-        req.character.name = req.body.character.name;
-      }
+  if (typeof req.body.name !== 'undefined') {
+    req.character.name = req.body.name;
+  }
 
-      if (typeof req.body.character.level !== 'undefined') {
-        req.character.level = req.body.character.level;
-      }
+  if (typeof req.body.level !== 'undefined') {
+    req.character.level = req.body.level;
+  }
 
-      req.character.save().then(function (character) {
-        return res.json({ character: character.toJSONFor(user) });
-      }).catch(next);
-    } else {
-      return res.sendStatus(403);
-    }
+  req.character.save().then(function (character) {
+    return res.json({
+      character: character.toJSON()
+    });
+    //     }).catch(next);
+    //   } else {
+    //    return res.sendStatus(403);
+    //   }
+  });
+});
+
+/*router.delete('/characters/:character', auth.required, function (req, res, next) {
+  console.log("deleted test")
+  return req.character.remove().then(deleted => {
+    res.json({
+      success: "character deleted",
+      character: deleted.toJSON()
+    });
+  });
+});*/
+
+
+router.delete('/characters/:character', auth.required, function (req, res, next) {
+  console.log('deleted')
+  return req.character.remove().then(function () {
+    return res.sendStatus(204);
   });
 });
 

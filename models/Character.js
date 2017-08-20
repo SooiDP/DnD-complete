@@ -23,6 +23,17 @@ CharacterSchema.methods.toJSONFor = function(user){
   };
 };
 
+CharacterSchema.methods.toJSON = function(){
+  return {
+    slug: this.slug,
+    race: this.race,
+    subRace: this.subRace,
+    name: this.name,
+    class: this.class,
+    level: this.level
+  };
+};
+
 CharacterSchema.pre('validate', function(next){
   if(!this.slug)  {
     this.slugify();
